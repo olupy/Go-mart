@@ -1,14 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 # Create your models here.
 
 LABEL = (('NEW','N'),('TRENDING','T'),('BEST_SELLER','BS'))
 
 class Category(models.Model):
     category_name = models.CharField(blank = True, max_length= 30)
+    slug = models.SlugField(blank = True, null = True, unique = True)
 
     def __str__(self) -> str:
         return f"{self.category_name}"
+
+    def save(self, *args, **kwargs)-> None:
+        if self.slug == None:
+            self.slug = slugify(self.category_name)
+        return super().save(*args, **kwargs)
 
 class Item(models.Model):
     item_name = models.CharField(max_length= 40)
@@ -38,5 +45,5 @@ class Order(models.Model):
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default = False)
 
-def __str__(self):
-    return self.user.username
+    def __str__(self):
+        return f"{self.user.username}"
